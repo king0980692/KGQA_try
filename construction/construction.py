@@ -48,7 +48,7 @@ def merge_entities(text: str, entities: list[dict[str, any]]) -> list[dict[str, 
             next_entity["start"] == current["end"] + 1
             or next_entity["start"] == current["end"]
         ):
-            current["text"] = text[current["start"] : next_entity["end"]].strip()
+            current["text"] = text[current["start"]: next_entity["end"]].strip()
             current["end"] = next_entity["end"]
         else:
             merged.append(current)
@@ -129,7 +129,7 @@ def run_llm(messages: list[dict[str, str]]) -> str:
         completion(
             model="ollama/phi4",
             messages=messages,
-            api_base="http://localhost:11435",
+            api_base="http://140.119.164.60:11434",
             max_tokens=1000,
         )
         .choices[0]
@@ -190,7 +190,8 @@ def extract_triples(
                             "content": system_message.format(entities=ents),
                             "role": "system",
                         },
-                        {"content": user_message.format(text=text), "role": "user"},
+                        {"content": user_message.format(
+                            text=text), "role": "user"},
                     ]
                 )
 
@@ -250,14 +251,16 @@ def run_construction_once(
     logging.info(f"# of entities: {len(entity_list)}")
 
     labels_entities = classify_entities(entity_list, labels)
-    logging.info({label: len(entities) for label, entities in labels_entities.items()})
+    logging.info({label: len(entities)
+                 for label, entities in labels_entities.items()})
 
     TRIPLES_PATH = f"{construction_dir}/chunks_triples{idx}.txt"
     ERRORS_PATH = f"{construction_dir}/errors{idx}.txt"
     chunks_triples, _ = extract_triples(
         chunks, chunks_entities, TRIPLES_PATH, ERRORS_PATH
     )
-    logging.info(f"# of triples: {sum(len(triples) for triples in chunks_triples)}")
+    logging.info(
+        f"# of triples: {sum(len(triples) for triples in chunks_triples)}")
 
     return chunks_triples, labels_entities
 
@@ -359,7 +362,8 @@ if __name__ == "__main__":
     # check whether the arguments are valid
     if args.dataset == "crag":
         if args.crag_top_n is None and args.crag_line_id is None:
-            raise ValueError("Please provide either crag_top_n or crag_line_id")
+            raise ValueError(
+                "Please provide either crag_top_n or crag_line_id")
     elif args.dataset == "wiki":
         if args.wiki_title is None:
             raise ValueError("Please provide wiki_title")
@@ -394,7 +398,8 @@ if __name__ == "__main__":
 
     if args.dataset == "crag":
         # load crag pages
-        page_contents_dict = load_crag_pages(args.crag_top_n, args.crag_line_id)
+        page_contents_dict = load_crag_pages(
+            args.crag_top_n, args.crag_line_id)
 
         for line_id, page_contents in page_contents_dict.items():
             # paths

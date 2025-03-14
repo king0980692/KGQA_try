@@ -25,7 +25,7 @@ def run_llm(messages: list[dict[str, str]]) -> str:
         completion(
             model="ollama/phi4",
             messages=messages,
-            api_base="http://localhost:11435",
+            api_base="http://140.119.164.60:11434",
             max_tokens=1000,
         )
         .choices[0]

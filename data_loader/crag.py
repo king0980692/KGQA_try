@@ -16,7 +16,8 @@ def get_multi_hop_questions(
             global multi_hop_infos
             multi_hop_infos = json.load(f)
 
-        multi_hop_line_ids = [qa_info["line_id"] for qa_info in multi_hop_infos[:top_n]]
+        multi_hop_line_ids = [qa_info["line_id"]
+                              for qa_info in multi_hop_infos[:top_n]]
     elif line_id is not None:
         multi_hop_line_ids = [line_id]
 
@@ -53,7 +54,7 @@ def get_page_contents(
     for line_id in tqdm(multi_hop_line_ids):
         search_results = multi_hop_questions[line_id]["search_results"]
 
-        for search_result in search_results:
+        for search_result in search_results:  # 5
             # get page content
             page_name = search_result["page_name"]
             page_origin_content = search_result["page_result"]
@@ -73,6 +74,8 @@ def get_page_contents(
 def load_crag_pages(
     top_n: int = None, line_id: int = None
 ) -> dict[int, list[dict[str, str]]]:
-    multi_hop_line_ids, multi_hop_questions = get_multi_hop_questions(top_n, line_id)
-    page_contents_dict = get_page_contents(multi_hop_line_ids, multi_hop_questions)
+    multi_hop_line_ids, multi_hop_questions = get_multi_hop_questions(
+        top_n, line_id)
+    page_contents_dict = get_page_contents(
+        multi_hop_line_ids, multi_hop_questions)
     return page_contents_dict
